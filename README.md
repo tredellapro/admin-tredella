@@ -33,3 +33,60 @@ Deliberately the same as the seller app, so moving between them costs nothing:
 
 The admin token lives under its own cookie name, so an admin session and a
 seller session can coexist in one browser without either picking up the other's.
+
+## Screens
+
+| Route | Screen |
+| --- | --- |
+| `/` | Analytics — the console opens here |
+| `/login` | Sign in (the only public route) |
+| `/users`, `/users/[id]` | User Management, User Profile |
+| `/categories` | Categories and subcategories |
+| `/brands` | Brands |
+| `/orders`, `/orders/[id]` | Order History, Order Information |
+| `/products`, `/products/[id]` | Product List, Product Information — including approval |
+| `/stores`, `/stores/[id]` | Stores, Store Details (the seller profile) |
+
+`/plans`, `/withdrawals`, `/chats`, `/complaints` and `/settings` are in the
+sidebar with a placeholder; their designs exist in Figma but are not built yet.
+
+Every screen is responsive. Below `lg` the sidebar becomes a drawer; below `md`
+each table row is re-laid out as a card, because a seven-column table cannot be
+read on a phone whichever way you squeeze it.
+
+## The one rule worth knowing
+
+`src/lib/productApproval.ts` decides whether a listing can be sold. Three
+separate parties have a say and the module keeps them apart:
+
+- **the admin** approves or rejects it,
+- **the seller** switches it on or off in their own dashboard,
+- **stock** has to be greater than zero.
+
+Approving a listing therefore does *not* put it on sale if the seller has it
+switched off, and rejecting one does not flip the seller's switch behind their
+back. The module is dependency-free so it can be compiled and exercised on its
+own; the cases it covers are in its tests.
+
+## What the backend still owes
+
+These screens run on the sample rows in `src/data` because the API cannot
+answer their questions yet. In rough order of how much is blocked without them:
+
+1. **`Product.approval`** — Prisma's `Product` has no status column at all, so
+   today a seller's listing is live the instant they save it. Without this
+   field the whole review workflow is decoration, and the buyer storefront has
+   no way to exclude unreviewed listings.
+2. **Marketplace-wide queries** — every existing resolver for products, orders
+   and sellers is scoped to one buyer or the signed-in seller. Admin needs
+   unscoped, paginated, filterable versions.
+3. **`User.status`** and **store status** — the designs show Active/Inactive
+   for both; neither exists. Deactivation is also what the seller app's account
+   deletion needs, since that only deactivates.
+4. **A `Brand` model** — `Product.brand` is free text, so the same brand can be
+   spelled three ways across three stores. The Brands screen only means
+   something once brands are rows.
+5. **Descriptions on `Category` / `Subcategory`** — the Categories table shows
+   one per subcategory; there is no column.
+6. **Rate limiting on `login`** — there is none, which matters more for a
+   super-admin console than for the storefront.

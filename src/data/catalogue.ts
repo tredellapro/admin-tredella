@@ -86,21 +86,46 @@ export interface CategoryRow {
   id: string;
   categoryId: string;
   categoryName: string;
+  /** Null on the placeholder row for a category with no subcategories yet. */
+  subcategoryId: string | null;
   subcategoryName: string;
   description: string;
   productCount: number;
 }
 
-export const CATEGORY_ROWS: CategoryRow[] = CATEGORIES.flatMap((category) =>
-  category.subcategories.map((sub) => ({
-    id: `${category.id}/${sub.id}`,
-    categoryId: category.id,
-    categoryName: category.name,
-    subcategoryName: sub.name,
-    description: sub.description,
-    productCount: sub.productCount
-  }))
-);
+/**
+ * One row per subcategory — plus one placeholder row for a category that has
+ * none. Without that, a category you just created would be invisible on the
+ * screen you created it from, which reads as the save having failed.
+ */
+export const toRows = (categories: AdminCategory[]): CategoryRow[] =>
+  // annotated so the two ternary branches widen to CategoryRow rather than
+  // inferring `subcategoryId: string` from one and `null` from the other
+  categories.flatMap((category): CategoryRow[] =>
+    category.subcategories.length === 0
+      ? [
+          {
+            id: `${category.id}/`,
+            categoryId: category.id,
+            categoryName: category.name,
+            subcategoryId: null,
+            subcategoryName: '',
+            description: '',
+            productCount: 0
+          }
+        ]
+      : category.subcategories.map((sub) => ({
+          id: `${category.id}/${sub.id}`,
+          categoryId: category.id,
+          categoryName: category.name,
+          subcategoryId: sub.id,
+          subcategoryName: sub.name,
+          description: sub.description,
+          productCount: sub.productCount
+        }))
+  );
+
+export const CATEGORY_ROWS: CategoryRow[] = toRows(CATEGORIES);
 
 export const categoryName = (id: string): string =>
   CATEGORIES.find((category) => category.id === id)?.name ?? 'Uncategorised';

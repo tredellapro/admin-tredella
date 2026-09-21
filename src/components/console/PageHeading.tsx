@@ -34,8 +34,11 @@ export default function PageHeading({ title, trail = [] }: PageHeadingProps) {
           <nav aria-label="Breadcrumb" className="mt-1">
             <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-12 text-gray">
               <li>Admin</li>
-              {trail.map((crumb) => (
-                <li key={crumb.label} className="flex items-center gap-2">
+              {/* Keyed by position, not label: the designs repeat a word in
+                  the trail ("Admin • Categories • Categories"), and keying by
+                  label makes those two crumbs collide. */}
+              {trail.map((crumb, index) => (
+                <li key={index} className="flex items-center gap-2">
                   <span aria-hidden="true" className="text-primary">
                     •
                   </span>

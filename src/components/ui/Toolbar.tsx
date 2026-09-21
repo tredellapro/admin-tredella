@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { HiOutlineUpload } from 'react-icons/hi';
 import SearchInput from './SearchInput';
 import FilterDropdown from './FilterDropdown';
@@ -17,6 +18,8 @@ interface ToolbarProps<T> {
   onRemoveChip: (_key: string) => void;
   onExport?: () => void;
   searchPlaceholder?: string;
+  /** Screen-specific buttons, rendered before Export. */
+  actions?: ReactNode;
 }
 
 /**
@@ -34,7 +37,8 @@ export default function Toolbar<T>({
   chips,
   onRemoveChip,
   onExport,
-  searchPlaceholder
+  searchPlaceholder,
+  actions
 }: ToolbarProps<T>) {
   return (
     <div className="border-b border-secondary/8 px-4 py-4 sm:px-5">
@@ -66,6 +70,8 @@ export default function Toolbar<T>({
               Apply Filter
             </button>
           )}
+
+          {actions}
 
           {onExport && (
             <button

@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Same brand tokens as the buyer and seller apps — one product, three
+   front ends. Keep these in step if the palette ever moves. */
+:root {
+  --primary: #e94560;
+  --secondary: #2b3445;
+  --gray: #697282;
+  --background: #f6f9fc;
+  --black: #000000;
+  --white: #ffffff;
+  /* RGB channels so Tailwind opacity modifiers (e.g. bg-primary/90) work */
+  --primary-rgb: 233 69 96;
+  --secondary-rgb: 43 52 69;
+  --gray-rgb: 105 114 130;
+  --black-rgb: 0 0 0;
+  --white-rgb: 255 255 255;
+}
+
+@layer utilities {
+  .flex_center {
+    @apply flex items-center justify-center;
+  }
+
+  /* Scrollbars in the brand palette rather than the OS default grey. Firefox
+     takes the standard properties; Chrome and Safari need the -webkit pseudo
+     elements, so both are declared. */
+  .brand-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--primary-rgb) / 0.35) transparent;
+  }
+
+  .brand-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .brand-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .brand-scroll::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--primary-rgb) / 0.3);
+    border-radius: 9999px;
+  }
+
+  .brand-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--primary-rgb) / 0.55);
+  }
+
+  /* For strips that are obviously swipeable on their own — a tab row whose
+     last tab is visibly cut off. A bar there would read as a second underline. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

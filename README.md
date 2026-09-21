@@ -17,6 +17,19 @@ The API defaults to `http://localhost:4000/graphql`. Point it elsewhere with
 `npm start` serves on port 5009, so the seller app (5008) and this can run side
 by side.
 
+## Signing in
+
+There is no sign-up and no self-service password reset: an admin account is
+created by another admin. Make one from the backend repo:
+
+```bash
+npm run admin:create -- you@tredella.com yourpassword "Your Name"
+```
+
+Run with no arguments and it creates `admin2@gmail.com` / `admin123`, which is
+the local development account. Re-running for an existing admin resets their
+password — that is the way back in for someone locked out.
+
 ## Conventions
 
 Deliberately the same as the seller app, so moving between them costs nothing:

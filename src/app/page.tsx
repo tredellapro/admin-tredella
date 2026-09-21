@@ -1,4 +1,5 @@
 import { HiOutlineShieldCheck } from 'react-icons/hi';
+import SessionBar from 'components/layout/SessionBar';
 
 /* Placeholder until the admin screens are designed. The queues below are the
    ones the buyer and seller apps already depend on — each is something those
@@ -30,7 +31,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background px-4 py-16 sm:px-6">
       <div className="mx-auto max-w-[760px]">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-24 text-primary">
+        <SessionBar />
+
+        <span className="mt-10 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-24 text-primary">
           <HiOutlineShieldCheck aria-hidden="true" />
         </span>
 

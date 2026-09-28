@@ -12,6 +12,7 @@ import Pagination from 'components/ui/Pagination';
 import StatusBadge from 'components/ui/StatusBadge';
 import IconButton from 'components/ui/IconButton';
 import DecisionModal from 'components/withdrawals/DecisionModal';
+import { useAccess } from 'components/console/AccessContext';
 import { useTableState, type FilterDef } from 'hooks/useTableState';
 import { WITHDRAWALS, maskAccount, standingFor, type WithdrawalRow } from 'data/withdrawals';
 import { storeName } from 'data/stores';
@@ -56,6 +57,8 @@ const FILTERS: FilterDef<WithdrawalRow>[] = [
 ];
 
 export default function WithdrawalsPage() {
+  const { manage } = useAccess();
+  const mayRelease = manage('withdrawals');
   const [rows, setRows] = useState<WithdrawalRow[]>(() => queueOrder(WITHDRAWALS));
   const [deciding, setDeciding] = useState<WithdrawalRow | null>(null);
 
@@ -147,11 +150,15 @@ export default function WithdrawalsPage() {
       actions: true,
       cell: (row) => (
         <div className="flex items-center gap-2">
-          <IconButton
-            label={`Decide ${row.id}`}
-            icon={<HiOutlinePencil />}
-            onClick={() => setDeciding(row)}
-          />
+          {/* Releasing money is a super-admin action. Everyone else still gets
+              the record — they just have no button to act on it. */}
+          {mayRelease && (
+            <IconButton
+              label={`Decide ${row.id}`}
+              icon={<HiOutlinePencil />}
+              onClick={() => setDeciding(row)}
+            />
+          )}
           <IconButton
             label={`Open ${row.id}`}
             icon={<HiOutlineEye />}

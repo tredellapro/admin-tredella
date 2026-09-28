@@ -10,6 +10,7 @@ import StatCard from 'components/ui/StatCard';
 import Button from 'components/ui/Button';
 import Avatar from 'components/ui/Avatar';
 import DecisionModal from './DecisionModal';
+import { useAccess } from 'components/console/AccessContext';
 import { standingFor, withdrawalById } from 'data/withdrawals';
 import { storeById } from 'data/stores';
 import { userForStore } from 'data/users';
@@ -30,6 +31,8 @@ const METHOD_LABEL = {
 } as const;
 
 export default function WithdrawDetailView({ id }: { id: string }) {
+  const { manage } = useAccess();
+  const mayRelease = manage('withdrawals');
   const row = withdrawalById(id);
   const [status, setStatus] = useState<WithdrawalStatus>(
     () => row?.status ?? 'PENDING'
@@ -64,7 +67,7 @@ export default function WithdrawDetailView({ id }: { id: string }) {
         subtitle={`#${row.id} · ${store?.name ?? row.storeId}`}
         backTo="/withdrawals"
         actions={
-          status === 'PENDING' ? (
+          status === 'PENDING' && mayRelease ? (
             <Button type="button" onClick={() => setDeciding(true)}>
               Review request
             </Button>

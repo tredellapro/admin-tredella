@@ -140,3 +140,40 @@ not something to reach by fat-fingering a zero.
     first. With more than one admin account, threads land on one person and
     are invisible to everyone else. Support needs a shared queue before the
     Chats screen can use the live API.
+
+## Team access
+
+`src/lib/access.ts` — same shape as `seller-tredella/src/lib/roles.ts`, so
+moving between the repos costs nothing. A **role is a preset over a
+per-section permission map**, not something code branches on. Never write
+`role === 'ADMIN'`; read the map, so a Custom member behaves like any other.
+
+- `Access` is `NONE | VIEW | MANAGE`, held per section for all 13 sections.
+- Presets: `SUPER_ADMIN`, `ADMIN`, `EDITOR`, `VIEWER`, plus `CUSTOM`.
+- **The super admin alone releases money and grants access.** `ADMIN` gets
+  `VIEW` on withdrawals and plans, never `MANAGE` — an admin with `MANAGE`
+  could pay the marketplace's money into a bank account.
+- The last super admin cannot be demoted or removed, by anyone including
+  themselves. A console with nobody who can grant access is locked out of
+  itself.
+- `SECTIONS[].href` matches `NavItem.href` in `components/console/navigation.ts`
+  on purpose — that is how the sidebar filters itself. A new nav item needs a
+  section here or it is visible to everyone.
+
+Granted under **Settings → Team Access**, which only appears for someone who
+can manage the team.
+
+### This is not security yet
+
+`AccessProvider` defaults to `SUPER_ADMIN` when the signed-in email is not in
+`src/data/team.ts`, because the API has no staff-role column — every ADMIN
+token really is a super admin today, and failing closed would lock someone out
+over data that does not exist.
+
+`RouteGuard` stops a restricted member typing a URL they cannot see, but that
+is still only the console's own guard: **nothing here stops a request made
+outside the browser.** The resolvers have to check a staff role too.
+
+12. **No staff roles on the backend** — `User.role` is BUYER | SELLER | ADMIN.
+    Team access needs a role (or a permission map) per admin account, and
+    every admin-only resolver needs to enforce it.

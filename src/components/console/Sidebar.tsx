@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { HiX } from 'react-icons/hi';
 import { NAV, activeHref } from './navigation';
 import { useConsole } from './ConsoleContext';
+import { useAccess } from './AccessContext';
+import { SECTIONS } from 'lib/access';
 
 /**
  * One definition, rendered twice: pinned on large screens and as a drawer
@@ -14,7 +16,16 @@ import { useConsole } from './ConsoleContext';
 export default function Sidebar() {
   const pathname = usePathname();
   const { drawerOpen, setDrawerOpen } = useConsole();
+  const { view } = useAccess();
   const active = activeHref(pathname);
+
+  /* Sections carry the nav href, so a link is shown only when the member can
+     see that section. A nav item with no section would be visible to
+     everyone, which is why lib/access owns the list. */
+  const allowed = NAV.filter((item) => {
+    const section = SECTIONS.find((entry) => entry.href === item.href);
+    return section ? view(section.key) : false;
+  });
 
   const list = (
     <nav aria-label="Main menu" className="px-5 pb-8">
@@ -23,7 +34,7 @@ export default function Sidebar() {
       </p>
 
       <ul className="flex flex-col gap-1">
-        {NAV.map((item) => {
+        {allowed.map((item) => {
           const Icon = item.icon;
           const current = item.href === active;
 

@@ -7,11 +7,15 @@ import SampleDataNote from 'components/console/SampleDataNote';
 import Card from 'components/ui/Card';
 import StatusBadge from 'components/ui/StatusBadge';
 import PlanEditor from 'components/plans/PlanEditor';
+import { useAccess } from 'components/console/AccessContext';
 import { PLANS, SUBSCRIBERS } from 'data/plans';
 import { effectivePrice, savingPerMonth, type EditablePlan } from 'lib/plans';
 import { count, money } from 'lib/format';
 
 export default function PlansPage() {
+  const { manage } = useAccess();
+  /* Prices are the seller's bill — kept with the super admin, same as money. */
+  const mayEdit = manage('plans');
   const [plans, setPlans] = useState<EditablePlan[]>(PLANS);
   const [editing, setEditing] = useState<string | null>(null);
 
@@ -75,7 +79,7 @@ export default function PlansPage() {
                   </p>
                 </div>
 
-                {!isEditing && (
+                {!isEditing && mayEdit && (
                   <button
                     type="button"
                     onClick={() => setEditing(plan.code)}

@@ -15,6 +15,7 @@ import StatusBadge from 'components/ui/StatusBadge';
 import Avatar from 'components/ui/Avatar';
 import IconButton from 'components/ui/IconButton';
 import ReviewModal from './ReviewModal';
+import { useAccess } from 'components/console/AccessContext';
 import { useTableState, type FilterDef } from 'hooks/useTableState';
 import { PRODUCTS } from 'data/products';
 import { STORES, storeName } from 'data/stores';
@@ -65,6 +66,8 @@ const FILTERS: FilterDef<AdminProduct>[] = [
 
 export default function ProductsView() {
   const { mode } = useConsole();
+  const { manage } = useAccess();
+  const mayReview = manage('products');
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<AdminProduct[]>(PRODUCTS);
   const [reviewing, setReviewing] = useState<AdminProduct | null>(null);
@@ -189,11 +192,13 @@ export default function ProductsView() {
       actions: true,
       cell: (product) => (
         <div className="flex items-center gap-2">
-          <IconButton
-            label={`Review ${product.name}`}
-            icon={<HiOutlinePencil />}
-            onClick={() => setReviewing(product)}
-          />
+          {mayReview && (
+            <IconButton
+              label={`Review ${product.name}`}
+              icon={<HiOutlinePencil />}
+              onClick={() => setReviewing(product)}
+            />
+          )}
           <IconButton
             label={`Open ${product.name}`}
             icon={<HiOutlineEye />}

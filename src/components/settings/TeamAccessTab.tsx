@@ -13,8 +13,10 @@ import type { TeamMember } from 'data/team';
 import {
   ACCESS_LABEL,
   ASSIGNABLE_ROLES,
+  JOB_TEMPLATES,
   ROLE_LABEL,
   SECTIONS,
+  applyTemplate,
   customProblem,
   permissionsFor,
   removalProblem,
@@ -219,6 +221,33 @@ export default function TeamAccessTab() {
               ))}
             </select>
           </label>
+
+          {/* The three jobs the client described — "only view store", "check
+              product and approve", "check the new seller info and verify" —
+              are one click rather than thirteen. */}
+          <div>
+            <p className="pb-2 text-13 text-secondary">
+              Or start from a job{' '}
+              <span className="text-gray">(then adjust below)</span>
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {JOB_TEMPLATES.map((template) => (
+                <button
+                  key={template.key}
+                  type="button"
+                  title={template.hint}
+                  onClick={() => {
+                    setGrants(applyTemplate(template));
+                    setRole('CUSTOM');
+                    setProblem(null);
+                  }}
+                  className="rounded-lg border border-secondary/20 px-3 py-1.5 text-12 text-secondary transition-colors hover:border-primary/40 hover:text-primary"
+                >
+                  {template.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div>
             <p className="pb-2 text-13 text-secondary">Sections</p>

@@ -59,6 +59,7 @@ seller session can coexist in one browser without either picking up the other's.
 | `/orders`, `/orders/[id]` | Order History, Order Information |
 | `/products`, `/products/[id]` | Product List, Product Information — including approval |
 | `/stores`, `/stores/[id]` | Stores, Store Details (the seller profile) |
+| `/verification`, `/verification/[id]` | Seller verification — trade licences and documents |
 | `/plans` | Manage Plans — price, discount and the points |
 | `/withdrawals`, `/withdrawals/[id]` | Withdraw Request, Withdraw Information |
 | `/chats` | Support conversations with buyers and sellers |
@@ -177,3 +178,34 @@ outside the browser.** The resolvers have to check a staff role too.
 12. **No staff roles on the backend** — `User.role` is BUYER | SELLER | ADMIN.
     Team access needs a role (or a permission map) per admin account, and
     every admin-only resolver needs to enforce it.
+
+## Job templates
+
+Grades answer "how senior is this person". `JOB_TEMPLATES` in
+`src/lib/access.ts` answer "what is this person here to do", which is what
+actually gets asked — **Store viewer**, **Product reviewer**, **Seller
+verifier**, **Support agent**, **Finance**. One click in Team Access sets the
+whole map; the member becomes Custom, because that is what they are. No
+template can grant team access or release money.
+
+## Seller verification
+
+`src/lib/verification.ts` is the review step the seller app has been waiting
+on since registration was built — `verificationStatus` has sat on PENDING
+because nothing ever moved it.
+
+- A **VAT certificate is only required when the seller gave a TRN**. UAE
+  registration is mandatory above AED 375,000 turnover, so demanding one from
+  everybody would block half the queue on a document that does not exist.
+- A seller **cannot be verified on an expired trade licence**, and missing
+  documents are reported ahead of the expiry — they are different jobs.
+- **Removing a document is how the seller gets their upload box back**; their
+  dashboard only offers upload where a slot is empty. Doing it to a verified
+  store drops it back to In review, because leaving it Verified would mean a
+  store trading on a document an admin has just called wrong.
+- Neither Verified nor Rejected is terminal: a licence lapses, an appeal
+  succeeds. That is different from a payout, where the money has gone.
+
+13. **No admin verification mutation** — `removeSellerDocument` exists but is
+    scoped to the signed-in seller, so an admin cannot call it, and nothing
+    writes `verificationStatus` or `verificationNote` from this side.

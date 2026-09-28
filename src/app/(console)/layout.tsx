@@ -1,9 +1,8 @@
-import type { ReactNode } from "react";
-import { AccessProvider } from "components/console/AccessContext";
-import { ConsoleProvider } from "components/console/ConsoleContext";
-import RouteGuard from "components/console/RouteGuard";
-import Sidebar from "components/console/Sidebar";
-import TopContactBar from "components/console/TopContactBar";
+import type { ReactNode } from 'react';
+import { AccessProvider } from 'components/console/AccessContext';
+import { ConsoleProvider } from 'components/console/ConsoleContext';
+import RouteGuard from 'components/console/RouteGuard';
+import Sidebar from 'components/console/Sidebar';
 
 /* The whole page scrolls and the sidebar is sticky, rather than a nested
    scroll container: on a phone a `100vh` shell fights the browser's own
@@ -13,8 +12,6 @@ export default function ConsoleLayout({ children }: { children: ReactNode }) {
     <AccessProvider>
       <ConsoleProvider>
         <div className="min-h-screen bg-background">
-          <TopContactBar />
-
           <div className="flex">
             <Sidebar />
 

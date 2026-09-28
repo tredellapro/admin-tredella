@@ -58,6 +58,7 @@ export const SECTIONS: Section[] = [
   { key: 'orders', label: 'Orders', href: '/orders', hint: 'Every order across all stores' },
   { key: 'products', label: 'Products', href: '/products', hint: 'Listings, and approving them for sale' },
   { key: 'stores', label: 'Stores', href: '/stores', hint: 'Seller profiles and suspension' },
+  { key: 'verification', label: 'Seller verification', href: '/verification', hint: 'Trade licences, Emirates IDs and verifying a new seller' },
   { key: 'plans', label: 'Plans', href: '/plans', hint: 'Prices, discounts and plan points' },
   { key: 'withdrawals', label: 'Withdrawals', href: '/withdrawals', hint: 'Releasing money to sellers' },
   { key: 'chats', label: 'Chats', href: '/chats', hint: 'Support conversations' },
@@ -104,6 +105,7 @@ export const ROLE_PRESETS: Record<Exclude<Role, 'CUSTOM'>, Permissions> = {
     settings: 'MANAGE',
     withdrawals: 'NONE',
     plans: 'NONE',
+    verification: 'VIEW',
     team: 'NONE'
   }),
 
@@ -213,3 +215,81 @@ export const customProblem = (permissions: Permissions): string | null =>
   Object.values(permissions).every((level) => level === 'NONE')
     ? 'Give them access to at least one section, or they will have nowhere to land.'
     : null;
+
+/* ---------------- job templates ---------------- */
+
+export interface JobTemplate {
+  key: string;
+  label: string;
+  hint: string;
+  grants: Permissions;
+}
+
+/**
+ * Real jobs, not grades.
+ *
+ * The four presets answer "how senior is this person"; these answer "what is
+ * this person here to do", which is what actually gets asked — one person only
+ * looks at stores, one reviews listings, one checks a new seller's paperwork.
+ * Applying a template makes the member CUSTOM, because that is what they are.
+ */
+export const JOB_TEMPLATES: JobTemplate[] = [
+  {
+    key: 'store-viewer',
+    label: 'Store viewer',
+    hint: 'Looks at stores and their sellers. Changes nothing.',
+    grants: { stores: 'VIEW', settings: 'MANAGE' }
+  },
+  {
+    key: 'product-reviewer',
+    label: 'Product reviewer',
+    hint: 'Approves or rejects listings, and can see the store behind one.',
+    grants: {
+      products: 'MANAGE',
+      categories: 'VIEW',
+      brands: 'VIEW',
+      stores: 'VIEW',
+      settings: 'MANAGE'
+    }
+  },
+  {
+    key: 'seller-verifier',
+    label: 'Seller verifier',
+    hint: 'Checks trade licences and Emirates IDs, and verifies new sellers.',
+    grants: {
+      verification: 'MANAGE',
+      stores: 'VIEW',
+      users: 'VIEW',
+      settings: 'MANAGE'
+    }
+  },
+  {
+    key: 'support-agent',
+    label: 'Support agent',
+    hint: 'Answers chats and complaints, and can look up an order.',
+    grants: {
+      chats: 'MANAGE',
+      complaints: 'MANAGE',
+      orders: 'VIEW',
+      settings: 'MANAGE'
+    }
+  },
+  {
+    key: 'finance',
+    label: 'Finance',
+    hint: 'Sees the money without being able to release it — only a super admin does that.',
+    grants: {
+      withdrawals: 'VIEW',
+      orders: 'VIEW',
+      stores: 'VIEW',
+      analytics: 'VIEW',
+      settings: 'MANAGE'
+    }
+  }
+];
+
+/** A template expanded into a full map — unlisted sections stay NONE. */
+export const applyTemplate = (template: JobTemplate): Permissions => ({
+  ...everySection('NONE'),
+  ...template.grants
+});

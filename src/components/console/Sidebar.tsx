@@ -41,12 +41,6 @@ export default function Sidebar() {
               >
                 <Icon aria-hidden="true" className="shrink-0 text-18" />
                 <span className="truncate">{item.label}</span>
-                {item.pending && !current && (
-                  // honest about what is not built yet rather than a dead link
-                  <span className="ml-auto text-10 uppercase tracking-wide text-gray/70">
-                    soon
-                  </span>
-                )}
               </Link>
             </li>
           );

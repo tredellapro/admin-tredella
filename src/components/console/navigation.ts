@@ -18,8 +18,6 @@ export interface NavItem {
   href: string;
   label: string;
   icon: IconType;
-  /** No screen behind it yet — the sidebar still lists it, greyed. */
-  pending?: boolean;
 }
 
 /* Analytics is not in the Figma sidebar, but the console opens on it, so it
@@ -36,7 +34,7 @@ export const NAV: NavItem[] = [
   { href: '/withdrawals', label: 'Withdrawals', icon: HiOutlineCash },
   { href: '/chats', label: 'Chats', icon: HiOutlineChat },
   { href: '/complaints', label: 'Complaints', icon: HiOutlineQuestionMarkCircle },
-  { href: '/settings', label: 'Settings', icon: HiOutlineCog, pending: true }
+  { href: '/settings', label: 'Settings', icon: HiOutlineCog }
 ];
 
 /** The deepest nav item matching the path — so /users/789 still lights Users. */

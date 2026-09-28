@@ -18,3 +18,7 @@ export interface LoginResult {
 export interface MeResult {
   me: AuthUser | null;
 }
+
+export interface ChangePasswordResult {
+  changePassword: boolean;
+}

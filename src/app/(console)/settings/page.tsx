@@ -1,9 +1,34 @@
-import ComingSoon from 'components/console/ComingSoon';
+'use client';
 
-export default function Page() {
+import { useState } from 'react';
+import PageHeading from 'components/console/PageHeading';
+import Tabs from 'components/ui/Tabs';
+import ProfileTab from 'components/settings/ProfileTab';
+import SecurityTab from 'components/settings/SecurityTab';
+
+export default function SettingsPage() {
+  const [tab, setTab] = useState('PROFILE');
+
   return (
-    <ComingSoon title="Settings" section="Settings">
-      Console settings, plus the super-admin actions the other apps wait on: restoring a deactivated account and removing a seller document so they can re-upload.
-    </ComingSoon>
+    <>
+      <PageHeading
+        title="Settings"
+        trail={[{ label: 'Settings' }, { label: 'Settings' }]}
+      />
+
+      <div className="pb-5">
+        <Tabs
+          label="Settings sections"
+          value={tab}
+          onChange={setTab}
+          tabs={[
+            { value: 'PROFILE', label: 'Profile Management' },
+            { value: 'ACCOUNT', label: 'Account Management' }
+          ]}
+        />
+      </div>
+
+      {tab === 'PROFILE' ? <ProfileTab /> : <SecurityTab />}
+    </>
   );
 }

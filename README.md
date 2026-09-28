@@ -63,9 +63,9 @@ seller session can coexist in one browser without either picking up the other's.
 | `/withdrawals`, `/withdrawals/[id]` | Withdraw Request, Withdraw Information |
 | `/chats` | Support conversations with buyers and sellers |
 | `/complaints`, `/complaints/[id]` | Manage Complaints, Complaint Support |
+| `/settings` | Profile and password |
 
-`/settings` is in the sidebar with a placeholder; its design exists in Figma
-but is not built yet.
+Every screen in the sidebar is built.
 
 Every screen is responsive. Below `lg` the sidebar becomes a drawer; below `md`
 each table row is re-laid out as a card, because a seven-column table cannot be
@@ -125,12 +125,16 @@ not something to reach by fat-fingering a zero.
 
 ## Newer gaps
 
-7. **No discount column on `Plan`** — an admin can set one here and has
+7. **No profile mutation** — there is no `updateProfile`/`updateMe`, so the
+   Settings profile tab cannot save a name or an avatar, and there is no
+   upload endpoint for the picture. `changePassword` does exist and the
+   Account tab uses it for real.
+8. **No discount column on `Plan`** — an admin can set one here and has
    nowhere to save it.
-8. **No payouts service at all** — no table, no resolver. Withdrawals are
+9. **No payouts service at all** — no table, no resolver. Withdrawals are
    entirely stand-in.
-9. **No Complaint model** — no subject, priority or open/solved anywhere.
-10. **Support threads are owned, not shared.** `listConversations` scopes an
+10. **No Complaint model** — no subject, priority or open/solved anywhere.
+11. **Support threads are owned, not shared.** `listConversations` scopes an
     admin to `{ adminId: userId }`, and `startConversation` assigns `adminId`
     with `findFirst({ role: 'ADMIN' })` — whichever admin row comes back
     first. With more than one admin account, threads land on one person and

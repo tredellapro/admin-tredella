@@ -34,3 +34,12 @@ export const ME = gql`
     }
   }
 `;
+
+/* The one settings action the API can already do. There is no profile
+   mutation — no updateProfile, no updateMe — so the Profile tab has nowhere
+   to save a name or an avatar yet. */
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+    changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+  }
+`;

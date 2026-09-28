@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { HiOutlineEye, HiOutlinePencil } from 'react-icons/hi';
 import PageHeading from 'components/console/PageHeading';
 import SampleDataNote from 'components/console/SampleDataNote';
-import { useConsole } from 'components/console/ConsoleContext';
 import Card from 'components/ui/Card';
 import DataTable, { type Column } from 'components/ui/DataTable';
 import Toolbar from 'components/ui/Toolbar';
@@ -33,6 +32,15 @@ import { count, firstWords, money, monthKey, monthOptions } from 'lib/format';
 import { downloadCsv } from 'lib/csv';
 
 const FILTERS: FilterDef<AdminProduct>[] = [
+  {
+    key: 'mode',
+    label: 'Storefront',
+    options: [
+      { value: 'RETAIL', label: 'Retail' },
+      { value: 'WHOLESALE', label: 'Wholesale' }
+    ],
+    match: (product, value) => product.mode === value
+  },
   {
     key: 'status',
     label: 'Status',
@@ -65,14 +73,13 @@ const FILTERS: FilterDef<AdminProduct>[] = [
 ];
 
 export default function ProductsView() {
-  const { mode } = useConsole();
   const { manage } = useAccess();
   const mayReview = manage('products');
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<AdminProduct[]>(PRODUCTS);
   const [reviewing, setReviewing] = useState<AdminProduct | null>(null);
 
-  const rows = products.filter((product) => product.mode === mode);
+  const rows = products;
 
   /* The Analytics card links straight to the review queue, so honour
      ?status=PENDING as an already-applied filter rather than dropping the
@@ -275,7 +282,7 @@ export default function ProductsView() {
             columns={columns}
             rows={table.visible}
             rowKey={(product) => product.id}
-            empty={`No ${mode === 'RETAIL' ? 'retail' : 'wholesale'} products match those filters.`}
+            empty="No products match those filters."
           />
         </div>
 

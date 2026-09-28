@@ -54,6 +54,7 @@ seller session can coexist in one browser without either picking up the other's.
 | `/` | Analytics — the console opens here |
 | `/login` | Sign in (the only public route) |
 | `/users`, `/users/[id]` | User Management, User Profile |
+| `/users/roles` | Admin Roles — add an admin, grant access (super admin only) |
 | `/categories` | Categories and subcategories |
 | `/brands` | Brands |
 | `/orders`, `/orders/[id]` | Order History, Order Information |
@@ -161,8 +162,10 @@ per-section permission map**, not something code branches on. Never write
   on purpose — that is how the sidebar filters itself. A new nav item needs a
   section here or it is visible to everyone.
 
-Granted under **Settings → Team Access**, which only appears for someone who
-can manage the team.
+Granted under **Users → Admin Roles** (`/users/roles`), which only a super
+admin can reach. The  section deliberately carries that href: RouteGuard
+matches the longest href, so `/users/roles` resolves to `team` rather than to
+`users` — otherwise an admin with access to Users could walk straight in.
 
 ### This is not security yet
 

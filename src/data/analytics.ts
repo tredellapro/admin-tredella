@@ -22,9 +22,12 @@ export interface Totals {
   cancelled: number;
 }
 
-export const totalsFor = (mode: StorefrontMode): Totals => {
-  const orders = ORDERS.filter((order) => order.mode === mode);
-  const products = PRODUCTS.filter((product) => product.mode === mode);
+/** Omit the mode for the whole marketplace, which is what the dashboard shows. */
+export const totalsFor = (mode?: StorefrontMode): Totals => {
+  const orders = mode ? ORDERS.filter((order) => order.mode === mode) : ORDERS;
+  const products = mode
+    ? PRODUCTS.filter((product) => product.mode === mode)
+    : PRODUCTS;
 
   return {
     revenue: orders
@@ -71,8 +74,8 @@ export const topStores = () =>
   [...STORES].sort((a, b) => b.sales - a.sales).slice(0, 5);
 
 /** Share of orders in each state, for the donut. */
-export const orderMix = (mode: StorefrontMode) => {
-  const orders = ORDERS.filter((order) => order.mode === mode);
+export const orderMix = (mode?: StorefrontMode) => {
+  const orders = mode ? ORDERS.filter((order) => order.mode === mode) : ORDERS;
   const of = (...states: string[]) =>
     orders.filter((order) => states.includes(order.status)).length;
 

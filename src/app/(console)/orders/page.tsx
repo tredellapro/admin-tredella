@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { HiOutlineEye } from 'react-icons/hi';
 import PageHeading from 'components/console/PageHeading';
 import SampleDataNote from 'components/console/SampleDataNote';
-import { useConsole } from 'components/console/ConsoleContext';
 import Card from 'components/ui/Card';
 import DataTable, { type Column } from 'components/ui/DataTable';
 import Toolbar from 'components/ui/Toolbar';
@@ -23,6 +22,15 @@ import { ORDER_STATUSES, ORDER_STATUS_LABEL } from 'lib/orderStatus';
 import { downloadCsv } from 'lib/csv';
 
 const FILTERS: FilterDef<AdminOrder>[] = [
+  {
+    key: 'mode',
+    label: 'Storefront',
+    options: [
+      { value: 'RETAIL', label: 'Retail' },
+      { value: 'WHOLESALE', label: 'Wholesale' }
+    ],
+    match: (order, value) => order.mode === value
+  },
   {
     key: 'freeze',
     label: 'Freeze Amount',
@@ -50,8 +58,7 @@ const FILTERS: FilterDef<AdminOrder>[] = [
 ];
 
 export default function OrdersPage() {
-  const { mode } = useConsole();
-  const rows = ORDERS.filter((order) => order.mode === mode);
+  const rows = ORDERS;
 
   const table = useTableState<AdminOrder>({
     rows,
@@ -207,7 +214,7 @@ export default function OrdersPage() {
             columns={columns}
             rows={table.visible}
             rowKey={(order) => order.id}
-            empty={`No ${mode === 'RETAIL' ? 'retail' : 'wholesale'} orders match those filters.`}
+            empty="No orders match those filters."
           />
         </div>
 

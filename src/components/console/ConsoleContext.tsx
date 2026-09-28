@@ -8,37 +8,26 @@ import {
   type ReactNode
 } from 'react';
 
-export type StorefrontMode = 'RETAIL' | 'WHOLESALE';
-
 interface ConsoleValue {
   drawerOpen: boolean;
   setDrawerOpen: (_open: boolean) => void;
-  mode: StorefrontMode;
-  toggleMode: () => void;
 }
 
 const ConsoleCtx = createContext<ConsoleValue | null>(null);
 
 /**
- * Two bits of shell state the pages need to reach: the mobile drawer (opened
- * from the page heading, closed by the sidebar) and the retail/wholesale
- * switch in the header. The marketplace runs both storefronts behind one
- * login, so Orders and Products mean different rows depending on this.
+ * The mobile drawer, opened from the page heading and closed by the sidebar.
+ *
+ * This used to carry a retail/wholesale switch for the whole console too. It
+ * was removed: a global mode is the wrong shape for an admin, who is usually
+ * looking at everything and only sometimes at one storefront. Orders and
+ * Products now carry Storefront as an ordinary filter alongside their others,
+ * which is both narrower in scope and visible in the filter chips.
  */
 export function ConsoleProvider({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mode, setMode] = useState<StorefrontMode>('WHOLESALE');
 
-  const value = useMemo(
-    () => ({
-      drawerOpen,
-      setDrawerOpen,
-      mode,
-      toggleMode: () =>
-        setMode((current) => (current === 'RETAIL' ? 'WHOLESALE' : 'RETAIL'))
-    }),
-    [drawerOpen, mode]
-  );
+  const value = useMemo(() => ({ drawerOpen, setDrawerOpen }), [drawerOpen]);
 
   return <ConsoleCtx.Provider value={value}>{children}</ConsoleCtx.Provider>;
 }

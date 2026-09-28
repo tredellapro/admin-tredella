@@ -64,7 +64,7 @@ export const SECTIONS: Section[] = [
   { key: 'chats', label: 'Chats', href: '/chats', hint: 'Support conversations' },
   { key: 'complaints', label: 'Complaints', href: '/complaints', hint: 'Complaint queue' },
   { key: 'settings', label: 'Settings', href: '/settings', hint: 'Your own profile and password' },
-  { key: 'team', label: 'Team access', href: null, hint: 'Granting access to staff' }
+  { key: 'team', label: 'Admin roles', href: '/users/roles', hint: 'Adding admins and granting them access' }
 ];
 
 export const SECTION_KEYS = SECTIONS.map((section) => section.key);

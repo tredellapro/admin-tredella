@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePencil, HiOutlineShieldCheck, HiOutlineTrash } from 'react-icons/hi';
 import PageHeading from 'components/console/PageHeading';
+import { useAccess } from 'components/console/AccessContext';
 import SampleDataNote from 'components/console/SampleDataNote';
 import Card from 'components/ui/Card';
 import DataTable, { type Column } from 'components/ui/DataTable';
@@ -47,6 +48,7 @@ const FILTERS: FilterDef<AdminUser>[] = [
 ];
 
 export default function UsersPage() {
+  const { view } = useAccess();
   const [users, setUsers] = useState<AdminUser[]>(USERS);
   const [editing, setEditing] = useState<AdminUser | null>(null);
   const [removing, setRemoving] = useState<AdminUser | null>(null);
@@ -160,6 +162,32 @@ export default function UsersPage() {
         title="User Management"
         trail={[{ label: 'Users' }, { label: 'User Management' }]}
       />
+
+      {/* Only a super admin can grant console access, so only they see the way
+          in. The route is guarded too — this link is a convenience, not the
+          lock. */}
+      {view('team') && (
+        <Link
+          href="/users/roles"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-white px-4 py-3 shadow-[0_2px_12px_rgba(43,52,69,0.05)] transition-colors hover:text-primary"
+        >
+          <span className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-16 text-primary">
+              <HiOutlineShieldCheck aria-hidden="true" />
+            </span>
+            <span>
+              <span className="block text-14 font-medium text-secondary">
+                Admin roles
+              </span>
+              <span className="block text-12 text-gray">
+                Add an admin and choose exactly what they can reach
+              </span>
+            </span>
+          </span>
+          <span className="text-13 font-medium text-primary">Open</span>
+        </Link>
+      )}
+
       <SampleDataNote />
 
       <Card flush>

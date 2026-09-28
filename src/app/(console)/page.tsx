@@ -10,7 +10,6 @@ import {
   HiOutlineUsers
 } from 'react-icons/hi';
 import PageHeading from 'components/console/PageHeading';
-import { useConsole } from 'components/console/ConsoleContext';
 import Card, { CardTitle } from 'components/ui/Card';
 import StatCard from 'components/ui/StatCard';
 import StatusBadge from 'components/ui/StatusBadge';
@@ -23,10 +22,8 @@ import { storeName } from 'data/stores';
 import { count, longDate, money, moneyShort, percent } from 'lib/format';
 
 export default function AnalyticsPage() {
-  const { mode } = useConsole();
-  const totals = totalsFor(mode);
-  const slices = orderMix(mode);
-  const label = mode === 'RETAIL' ? 'Retail' : 'Wholesale';
+  const totals = totalsFor();
+  const slices = orderMix();
   const rejected = PRODUCTS.filter(
     (product) => product.approval === 'REJECTED'
   ).length;
@@ -35,20 +32,15 @@ export default function AnalyticsPage() {
     <>
       <PageHeading title="Analytics" trail={[{ label: 'Analytics' }]} />
 
-      <p className="-mt-2 pb-5 text-13 text-gray">
-        Showing the <span className="font-medium text-secondary">{label}</span>{' '}
-        storefront. Switch it in the header to see the other one.
-      </p>
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard
-          label={`${label} revenue`}
+          label="Revenue"
           value={moneyShort(totals.revenue)}
           hint="Paid orders only"
           icon={<HiOutlineCurrencyDollar />}
         />
         <StatCard
-          label={`${label} orders`}
+          label="Orders"
           value={count(totals.orders)}
           hint={`${totals.cancelled} cancelled`}
           icon={<HiOutlineShoppingCart />}
@@ -94,16 +86,12 @@ export default function AnalyticsPage() {
           Waiting on you
         </CardTitle>
 
-        {/* Review work is not per-storefront — an admin clears the whole
-            queue — so this card deliberately ignores the mode switch and says
-            so, rather than quietly mixing a global count into a page that is
-            otherwise scoped to one storefront. */}
         <p className="px-1 pb-4 text-13 text-gray">
           A seller&rsquo;s listing does not go on sale until it is approved here.{' '}
           <span className="font-medium text-secondary">
             {REVIEW_QUEUE.length} awaiting review
           </span>
-          {rejected > 0 && `, ${rejected} rejected`} — across both storefronts.
+          {rejected > 0 && `, ${rejected} rejected`}.
         </p>
 
         {REVIEW_QUEUE.length === 0 ? (
@@ -147,7 +135,7 @@ export default function AnalyticsPage() {
         </Card>
 
         <Card>
-          <CardTitle>{label} order mix</CardTitle>
+          <CardTitle>Order mix</CardTitle>
           <DonutChart
             slices={slices}
             centreLabel="orders"

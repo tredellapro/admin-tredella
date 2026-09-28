@@ -163,7 +163,7 @@ per-section permission map**, not something code branches on. Never write
   section here or it is visible to everyone.
 
 Granted under **Users → Admin Roles** (`/users/roles`), which only a super
-admin can reach. The  section deliberately carries that href: RouteGuard
+admin can reach. The `team` section deliberately carries that href: RouteGuard
 matches the longest href, so `/users/roles` resolves to `team` rather than to
 `users` — otherwise an admin with access to Users could walk straight in.
 

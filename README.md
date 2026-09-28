@@ -59,9 +59,13 @@ seller session can coexist in one browser without either picking up the other's.
 | `/orders`, `/orders/[id]` | Order History, Order Information |
 | `/products`, `/products/[id]` | Product List, Product Information — including approval |
 | `/stores`, `/stores/[id]` | Stores, Store Details (the seller profile) |
+| `/plans` | Manage Plans — price, discount and the points |
+| `/withdrawals`, `/withdrawals/[id]` | Withdraw Request, Withdraw Information |
+| `/chats` | Support conversations with buyers and sellers |
+| `/complaints`, `/complaints/[id]` | Manage Complaints, Complaint Support |
 
-`/plans`, `/withdrawals`, `/chats`, `/complaints` and `/settings` are in the
-sidebar with a placeholder; their designs exist in Figma but are not built yet.
+`/settings` is in the sidebar with a placeholder; its design exists in Figma
+but is not built yet.
 
 Every screen is responsive. Below `lg` the sidebar becomes a drawer; below `md`
 each table row is re-laid out as a card, because a seven-column table cannot be
@@ -103,3 +107,32 @@ answer their questions yet. In rough order of how much is blocked without them:
    one per subcategory; there is no column.
 6. **Rate limiting on `login`** — there is none, which matters more for a
    super-admin console than for the storefront.
+
+## More rules worth knowing
+
+`src/lib/withdrawals.ts` is the other half of the seller app's payout rules.
+Before an admin can release money it checks the seller's cleared balance,
+whether any orders were never dispatched, whether the store is suspended, and
+whether there is a bank account to send to at all. Approved and Rejected are
+both terminal — money that has left cannot be pulled back from a dropdown.
+The admin and the seller see **different words for the same state** (Approved
+vs Completed); both maps live in that file and must be kept in step.
+
+`src/lib/plans.ts` covers price, discount and the feature list. There are
+exactly two plans and no way to create a third, because that is a product
+decision. A discount above 90% is refused: a free plan is its own decision,
+not something to reach by fat-fingering a zero.
+
+## Newer gaps
+
+7. **No discount column on `Plan`** — an admin can set one here and has
+   nowhere to save it.
+8. **No payouts service at all** — no table, no resolver. Withdrawals are
+   entirely stand-in.
+9. **No Complaint model** — no subject, priority or open/solved anywhere.
+10. **Support threads are owned, not shared.** `listConversations` scopes an
+    admin to `{ adminId: userId }`, and `startConversation` assigns `adminId`
+    with `findFirst({ role: 'ADMIN' })` — whichever admin row comes back
+    first. With more than one admin account, threads land on one person and
+    are invisible to everyone else. Support needs a shared queue before the
+    Chats screen can use the live API.

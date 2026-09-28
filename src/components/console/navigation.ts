@@ -32,10 +32,10 @@ export const NAV: NavItem[] = [
   { href: '/orders', label: 'Orders', icon: HiOutlineShoppingCart },
   { href: '/products', label: 'Products', icon: HiOutlineArchive },
   { href: '/stores', label: 'Stores', icon: HiOutlineOfficeBuilding },
-  { href: '/plans', label: 'Plans', icon: HiOutlineClipboardList, pending: true },
-  { href: '/withdrawals', label: 'Withdrawals', icon: HiOutlineCash, pending: true },
-  { href: '/chats', label: 'Chats', icon: HiOutlineChat, pending: true },
-  { href: '/complaints', label: 'Complaints', icon: HiOutlineQuestionMarkCircle, pending: true },
+  { href: '/plans', label: 'Plans', icon: HiOutlineClipboardList },
+  { href: '/withdrawals', label: 'Withdrawals', icon: HiOutlineCash },
+  { href: '/chats', label: 'Chats', icon: HiOutlineChat },
+  { href: '/complaints', label: 'Complaints', icon: HiOutlineQuestionMarkCircle },
   { href: '/settings', label: 'Settings', icon: HiOutlineCog, pending: true }
 ];
 

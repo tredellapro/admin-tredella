@@ -6,7 +6,6 @@ interface AuthShellProps {
   title: string;
   subtitle?: string;
   children: ReactNode;
-  /** Small print under the card — e.g. why there is no sign-up link. */
   footnote?: ReactNode;
 }
 
